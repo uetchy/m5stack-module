@@ -4,6 +4,7 @@ enclosure_size = 54;
 enclosure_thickness = 2;
 enclosure_height = 6.8;
 enclosure_radius = 3;
+inner_radius = 2.5;
 clasp_thickness = 0.8;
 clasp_height = 1.2; // PCB thickness should be 1.2mm
 screw_size = 1.8;
@@ -35,7 +36,7 @@ module enclosure() {
     roundedCube(inner_size,
       inner_size,
       enclosure_height+2,
-      radius=2.5,
+      radius=inner_radius,
       $fn=4);
   }
 }
@@ -43,21 +44,21 @@ module enclosure() {
 module screw() {
   top = 5;
   width = 4;
-  z = 3.7;
+  z = 3.8;
+  distance_from_edge = 9;
   translate([center_position, center_position]) // centerize
   for (i=[-1:2:1]) for (j=[-1:2:1]) {
     translate([
-      (inner_size/2 - top/2)*i,
-      (inner_size/2 - 11)*j,
-      enclosure_height - z/2
+      (inner_size/2 - top/2) * i,
+      (inner_size/2 - distance_from_edge) * j,
+      enclosure_height - z
     ])
     difference() {
       union() {
-        translate([i * top / 4, 0, 0])
-          cube([top / 2, width, z], center=true);
-        cylinder(h=z, r=width / 2, center=true);
+        translate([i * top/2/2, width/2, z/2]) cube([top / 2, width, z], center=true);
+        translate([0, 2, 0]) cylinder(h=z, r=width / 2);
       }
-      cylinder(h=z+2, r=screw_size/2, center=true);
+      translate([0, 2, -1]) cylinder(h=z+2, r=screw_size/2);
     }
   }
 }
@@ -67,17 +68,17 @@ difference() {
     enclosure();
     difference() {
       translate([ett, ett, enclosure_height])
-      roundedCube(
-        enclosure_size - ett * 2,
-        enclosure_size - ett * 2,
-        clasp_height,
-        radius = 2.7);
+        roundedCube(
+          enclosure_size - ett * 2,
+          enclosure_size - ett * 2,
+          clasp_height,
+          radius = 2.7);
       translate([2, 2, enclosure_height - 1])
-      roundedCube(
-        inner_size,
-        inner_size,
-        clasp_height + 2,
-        radius = 2.8);
+        roundedCube(
+          inner_size,
+          inner_size,
+          clasp_height + 2,
+          radius = inner_radius, $fn=4);
       translate([
         enclosure_size/2,
         enclosure_size/2,
