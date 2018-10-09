@@ -1,8 +1,10 @@
 $fn = 100;
 
+build_bottom_plate = false;
+enclosure_height = 6.8;
+// enclosure_height = 20;
 enclosure_size = 54;
 enclosure_thickness = 2;
-enclosure_height = 6.8;
 enclosure_radius = 3;
 inner_radius = 2.5;
 clasp_thickness = 0.8;
@@ -12,6 +14,9 @@ screw_size = 1.8;
 inner_size = enclosure_size - enclosure_thickness*2;
 etct = enclosure_thickness - clasp_thickness;
 center_position = enclosure_size / 2;
+spacer = 20;
+clasp_long = 10;
+clasp_short = 6.5;
 
 module roundedCube(x, y, z, radius=0) {
   translate([radius,radius,0])
@@ -46,16 +51,19 @@ module screw() {
   width = 4;
   z = 3.8;
   distance_from_edge = 9;
-  translate([center_position, center_position]) // centerize
+  translate([
+    center_position,
+    center_position - width/2]) // centerize
   for (i=[-1:2:1]) for (j=[-1:2:1]) {
-    translate([
+    translate([ // centerize
       (inner_size/2 - top/2) * i,
-      (inner_size/2 - distance_from_edge) * j,
+      (inner_size/2 - distance_from_edge - 2) * j,
       enclosure_height - z
     ])
     difference() {
       union() {
-        translate([i * top/2/2, width/2, z/2]) cube([top / 2, width, z], center=true);
+        translate([i * top/2/2, width/2, z/2])
+          cube([top / 2, width, z], center=true);
         translate([0, 2, 0]) cylinder(h=z, r=width / 2);
       }
       translate([0, 2, -1]) cylinder(h=z+2, r=screw_size/2);
@@ -80,18 +88,18 @@ difference() {
           clasp_height + 2,
           radius = inner_radius, $fn=4);
       translate([
-        enclosure_size/2,
-        enclosure_size/2,
+        center_position,
+        center_position,
         enclosure_height + 0.7]) {
         cube([
-            enclosure_size+20,
+            enclosure_size + spacer,
             enclosure_size-2-10*2,
             clasp_height
           ],
           center=true);
         cube([
-            enclosure_size-2-6.5*2,
-            enclosure_size+20,
+            enclosure_size - 2 - clasp_short * 2,
+            enclosure_size + spacer,
             clasp_height
           ],
           center=true);
@@ -99,33 +107,44 @@ difference() {
     }
     screw();
   }
-  translate([0, 0, 0]) color("red") difference() { // bottom clasp
-    spacer = 20;
-    clasp_long = 10;
-    clasp_short = 6.5;
-    translate([etct, etct, 0])
-      roundedCube(
-        enclosure_size - etct * 2,
-        enclosure_size - etct * 2,
-        clasp_height,
-        radius=inner_radius);
-    translate([ // centerize
-      center_position,
-      center_position,
-      clasp_height/2]) {
-      cube([
-          enclosure_size + spacer,
-          enclosure_size - enclosure_thickness - clasp_long*2,
-          clasp_height
-        ],
-        center=true);
-      cube([
-          enclosure_size - enclosure_thickness - clasp_short*2,
-          enclosure_size + spacer,
-          clasp_height
-        ],
-        center=true);
+  if (!build_bottom_plate) {
+    translate([0, 0, 0]) color("red") difference() { // bottom clasp
+      translate([etct, etct, 0])
+        roundedCube(
+          enclosure_size - etct * 2,
+          enclosure_size - etct * 2,
+          clasp_height,
+          radius=inner_radius);
+      translate([ // centerize
+        center_position,
+        center_position,
+        clasp_height/2]) {
+        cube([
+            enclosure_size + spacer,
+            enclosure_size - enclosure_thickness - clasp_long*2,
+            clasp_height
+          ],
+          center=true);
+        cube([
+            enclosure_size - enclosure_thickness - clasp_short*2,
+            enclosure_size + spacer,
+            clasp_height
+          ],
+          center=true);
+      }
     }
-  };
-  translate([9,-1,-1]) cube([6,4,2]);
+    translate([9,-1,-1]) cube([6,4,2]); // opener hole
+  }
+  
+}
+
+if (build_bottom_plate) {
+  translate([0, 0, 0]) color("blue") difference() { // bottom clasp
+    translate([enclosure_thickness, enclosure_thickness, 0])
+      cube([
+        inner_size,
+        inner_size,
+        clasp_height
+      ]);
+  }
 }
