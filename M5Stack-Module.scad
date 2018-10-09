@@ -10,7 +10,7 @@ clasp_height = 1.2; // PCB thickness should be 1.2mm
 screw_size = 1.8;
 
 inner_size = enclosure_size - enclosure_thickness*2;
-ett = enclosure_thickness - clasp_thickness;
+etct = enclosure_thickness - clasp_thickness;
 center_position = enclosure_size / 2;
 
 module roundedCube(x, y, z, radius=0) {
@@ -67,10 +67,10 @@ difference() {
   union() {
     enclosure();
     difference() {
-      translate([ett, ett, enclosure_height])
+      translate([etct, etct, enclosure_height])
         roundedCube(
-          enclosure_size - ett * 2,
-          enclosure_size - ett * 2,
+          enclosure_size - etct * 2,
+          enclosure_size - etct * 2,
           clasp_height,
           radius = 2.7);
       translate([2, 2, enclosure_height - 1])
@@ -99,26 +99,29 @@ difference() {
     }
     screw();
   }
-  translate([0,0,-7]) difference() {
-    translate([ett,ett,enclosure_height])
+  translate([0, 0, 0]) color("red") difference() { // bottom clasp
+    spacer = 20;
+    clasp_long = 10;
+    clasp_short = 6.5;
+    translate([etct, etct, 0])
       roundedCube(
-        enclosure_size-ett*2,
-        enclosure_size-ett*2,
+        enclosure_size - etct * 2,
+        enclosure_size - etct * 2,
         clasp_height,
-        radius=2.7);
-    translate([
-      enclosure_size/2,
-      enclosure_size/2,
-      enclosure_height+0.7 ]) {
+        radius=inner_radius);
+    translate([ // centerize
+      center_position,
+      center_position,
+      clasp_height/2]) {
       cube([
-          enclosure_size+20,
-          enclosure_size-2-10*2,
+          enclosure_size + spacer,
+          enclosure_size - enclosure_thickness - clasp_long*2,
           clasp_height
         ],
         center=true);
       cube([
-          enclosure_size-2-6.5*2,
-          enclosure_size+20,
+          enclosure_size - enclosure_thickness - clasp_short*2,
+          enclosure_size + spacer,
           clasp_height
         ],
         center=true);
