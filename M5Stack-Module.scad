@@ -30,9 +30,9 @@ module screw() {
   top = 5;
   width = 4;
   z = 3.7;
-  translate([outer_size/2, outer_size/2])
+  translate([outer_size / 2, outer_size / 2])
   for (i=[-1:2:1]) for (j=[-1:2:1]) {
-    translate([(inner_size/2-top/2)*i, (inner_size/2-9)*j, z/2+3])
+    translate([(inner_size/2-top/2)*i, (inner_size/2-9)*j, height-z/2])
     difference() {
       union() {
         translate([i*top/4,0,0]) cube([top/2,width,z], center=true);
@@ -43,11 +43,15 @@ module screw() {
   }
 }
 
+edge_thickness = 0.8;
+ett = thickness-edge_thickness;
+
 difference() {
   union() {
     enclosure();
     difference() {
-      translate([1,1,height]) roundedCube(outer_size-2, outer_size-2, edge_height, radius=2.7);
+      translate([ett,ett,height]) roundedCube(
+        outer_size-ett*2, outer_size-ett*2, edge_height, radius=2.7);
       translate([2,2,height-1]) roundedCube(inner_size, inner_size, edge_height+2, 2.8);
       translate([outer_size/2,outer_size/2,height+0.7]) {
         cube([outer_size+20, outer_size-2-10*2, edge_height], center=true);
@@ -57,7 +61,7 @@ difference() {
     screw();
   }
   translate([0,0,-7]) difference() {
-    translate([1,1,height]) roundedCube(outer_size-2, outer_size-2, edge_height, radius=2.7);
+    translate([ett,ett,height]) roundedCube(outer_size-ett*2, outer_size-ett*2, edge_height, radius=2.7);
     translate([outer_size/2,outer_size/2,height+0.7]) {
       cube([outer_size+20, outer_size-2-10*2, edge_height], center=true);
       cube([outer_size-2-6.5*2, outer_size+20, edge_height], center=true);
