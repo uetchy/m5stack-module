@@ -2,11 +2,12 @@ $fn = 100;
 
 build_bottom_plate = false;
 enclosure_height = 6.8;
-// enclosure_height = 20;
+// enclosure_height = 15;
 enclosure_size = 54;
 enclosure_thickness = 2;
-enclosure_radius = 3;
+enclosure_radius = 5;
 inner_radius = 2.5;
+clasp_radius = 3;
 clasp_thickness = 0.8;
 clasp_height = 1.2; // PCB thickness should be 1.2mm
 screw_size = 1.8;
@@ -75,12 +76,12 @@ difference() {
   union() {
     enclosure();
     difference() {
-      translate([etct, etct, enclosure_height])
+      color("yellow") translate([etct, etct, enclosure_height])
         roundedCube(
           enclosure_size - etct * 2,
           enclosure_size - etct * 2,
           clasp_height,
-          radius = 2.7);
+          radius = clasp_radius);
       translate([2, 2, enclosure_height - 1])
         roundedCube(
           inner_size,
@@ -109,12 +110,12 @@ difference() {
   }
   if (!build_bottom_plate) {
     translate([0, 0, 0]) color("red") difference() { // bottom clasp
-      translate([etct, etct, 0])
+      translate([etct, etct, -1])
         roundedCube(
           enclosure_size - etct * 2,
           enclosure_size - etct * 2,
-          clasp_height,
-          radius=inner_radius);
+          clasp_height+1,
+          radius=clasp_radius);
       translate([ // centerize
         center_position,
         center_position,
