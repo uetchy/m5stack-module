@@ -7,13 +7,16 @@ enclosure_size = 54;
 enclosure_thickness = 2;
 enclosure_radius = 5;
 inner_radius = 2.5;
-clasp_radius = 3;
-clasp_thickness = 0.8;
+clasp_top_radius = 3;
+clasp_bottom_radius = 3.3;
+clasp_top_thickness = 0.8;
+clasp_bottom_thickness = 1.0;
 clasp_height = 1.2; // PCB thickness should be 1.2mm
-screw_size = 1.8;
+screw_size = 1.7;
 
 inner_size = enclosure_size - enclosure_thickness*2;
-etct = enclosure_thickness - clasp_thickness;
+etct = enclosure_thickness - clasp_top_thickness;
+etbct = enclosure_thickness - clasp_bottom_thickness;
 center_position = enclosure_size / 2;
 spacer = 20;
 clasp_long = 10;
@@ -81,7 +84,7 @@ difference() {
           enclosure_size - etct * 2,
           enclosure_size - etct * 2,
           clasp_height,
-          radius = clasp_radius);
+          radius = clasp_top_radius);
       translate([2, 2, enclosure_height - 1])
         roundedCube(
           inner_size,
@@ -109,13 +112,13 @@ difference() {
     screw();
   }
   if (!build_bottom_plate) {
-    translate([0, 0, 0]) color("red") difference() { // bottom clasp
-      translate([etct, etct, -1])
+    translate([0, 0, 0]) difference() { // bottom clasp
+       color("red") translate([etbct, etbct, -1])
         roundedCube(
-          enclosure_size - etct * 2,
-          enclosure_size - etct * 2,
+          enclosure_size - etbct * 2,
+          enclosure_size - etbct * 2,
           clasp_height+1,
-          radius=clasp_radius);
+          radius=clasp_bottom_radius);
       translate([ // centerize
         center_position,
         center_position,
