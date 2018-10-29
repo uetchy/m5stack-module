@@ -1,8 +1,10 @@
 <div align="center">
-  <h1>M5Stack <span style="font-weight: 100">Module</span></h1>
+  <h1>M5Stack Module</h1>
+  <p>
+    3D model and PCB blueprints for custom M5Stack modules.
+  </p>
 </div>
 
-3D model and PCB blueprints for custom M5Stack modules.
 
 ![](assets/s1.png)
 
