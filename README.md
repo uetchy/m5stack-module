@@ -1,4 +1,6 @@
-# M5Stack Module
+<div align="center">
+  <h1>M5Stack <span style="font-weight: 100">Module</span></h1>
+</div>
 
 3D model and PCB blueprints for custom M5Stack modules.
 
